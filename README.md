@@ -1,7 +1,10 @@
-localpubsub
+windowpubsub
 ===
 
-Simple pubsub lightweight library using Window event listener and storage event.
+Simple and lightweight Pub/Sub library using Window event listener and storage event with zero dependencies.
+
+This enable applications to subscribe to events across different windows or tabs.
+Some use cases are for shopping carts updates or theme switching.
 
 #### Subscribing
 `subscribe(topic, callbackFunction);`

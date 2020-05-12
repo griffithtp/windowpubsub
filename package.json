@@ -1,6 +1,6 @@
 {
-  "name": "localpubsub",
-  "version": "0.0.1",
+  "name": "windowpubsub",
+  "version": "0.0.2",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -8,16 +8,18 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/griffithtp/localpubsub.git"
+    "url": "git+https://github.com/griffithtp/windowpubsub.git"
   },
   "keywords": [
+    "windowpubsub",
     "pubsub",
-    "localstorage"
+    "localstorage",
+    "localStorage subscription"
   ],
   "author": "griffithtp",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/griffithtp/localpubsub/issues"
+    "url": "https://github.com/griffithtp/widowpubsub/issues"
   },
-  "homepage": "https://github.com/griffithtp/localpubsub#readme"
+  "homepage": "https://github.com/griffithtp/windowpubsub#readme"
 }

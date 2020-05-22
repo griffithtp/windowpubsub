@@ -1,6 +1,6 @@
 {
   "name": "windowpubsub",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Simple and lightweight Pub/Sub library using Window event listener and storage event with zero dependencies.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",

@@ -1,8 +1,11 @@
 interface IListenerCallback {
-  (data: ICallbackData): any;
+  (data: IWindowPubSubData): any;
 }
 
-interface ICallbackData {
+/**
+ * IWindowPubSubData interface
+ */
+export interface IWindowPubSubData {
   topic: string;
   value: any;
   eventObject: any;
@@ -10,18 +13,30 @@ interface ICallbackData {
 
 let topics: Record<string, unknown> = {};
 
-function subscribe(topic: string, listener: IListenerCallback) {
+/**
+ * Current list of topics.
+ */
+function getTopics() {
+  return topics;
+}
+
+/**
+ * Subscribe to a topic
+ * @param topic Name of topic to subscribe
+ * @param listenerFunction Listener callback function
+ */
+function subscribe(topic: string, listenerFunction: IListenerCallback) {
   if (!topics.hasOwnProperty(topic)) {
-    topics[topic] = listener;
+    topics[topic] = listenerFunction;
   }
   window.addEventListener(
     topic,
-    (eventData) => processCustomEvent(topic, listener, eventData),
+    (eventData) => processCustomEvent(topic, listenerFunction, eventData),
     false
   );
   window.addEventListener(
     "storage",
-    (eventData) => processStorage(topic, listener, eventData),
+    (eventData) => processStorage(topic, listenerFunction, eventData),
     false
   );
   return {
@@ -31,41 +46,66 @@ function subscribe(topic: string, listener: IListenerCallback) {
   };
 }
 
-function processCustomEvent(topic: string, cb: IListenerCallback, result: any) {
+function processCustomEvent(
+  topic: string,
+  listenerFunction: IListenerCallback,
+  result: any
+) {
   if (topic === result.type) {
-    return cb({
+    return listenerFunction({
       topic,
       value: result.detail,
       eventObject: result,
-    } as ICallbackData);
+    } as IWindowPubSubData);
   }
 }
 
-function processStorage(topic: string, cb: IListenerCallback, result: StorageEvent) {
+function processStorage(
+  topic: string,
+  listenerFunction: IListenerCallback,
+  result: StorageEvent
+) {
   if (topic === result.key) {
-    return cb({
+    return listenerFunction({
       topic,
       value: result.newValue,
       eventObject: result,
-    } as ICallbackData);
+    } as IWindowPubSubData);
   }
 }
 
-function publish(topic: string, message: any) {
+/**
+ * Publish message on given topic.
+ * @param {string} topic Name of topic to publish message to.
+ * @param {any} message Your topic message.
+ * @returns {boolean} True if `message` successfully published on the `topic`.
+ */
+function publish(topic: string, message: any): boolean {
   if (topics[topic]) {
     window.localStorage.setItem(topic, message);
     const customEvent = new CustomEvent(topic, { detail: message });
-    window.dispatchEvent(customEvent);
+    return window.dispatchEvent(customEvent);
   }
+  return false;
 }
 
-function unsubscribe(topic: string) {
-  window.localStorage.removeItem(topic);
-  delete topics[topic];
+/**
+ * Unsubscribe and remove topic from topics list.
+ * @param topic Name of topic to unsubscribe.
+ * @returns {boolean} True if topic is successfully removed topic from topics list.
+ */
+function unsubscribe(topic: string): boolean {
+  try {
+    window.localStorage.removeItem(topic);
+    delete topics[topic];
+  } catch (error) {
+    return false;
+  }
+  return true;
 }
 
 export default {
-  topics,
+  getTopics,
   publish,
   subscribe,
   unsubscribe,
